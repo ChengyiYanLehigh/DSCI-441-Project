@@ -1,0 +1,34 @@
+/* 调整整体布局容器的样式 */
+.container {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+}
+
+/* 推荐列表项的样式，使内容和按钮在水平方向上对齐 */
+.list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+/* 电影名称的样式，保证占足够的空间并对齐 */
+.movie-name {
+    flex-grow: 1;
+    margin-right: 20px;
+}
+
+/* 按钮的统一样式 */
+.button {
+    min-width: 100px; /* 确保所有按钮宽度一致 */
+    padding: 5px 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.button:hover {
+    background-color: #0056b3;
+}
