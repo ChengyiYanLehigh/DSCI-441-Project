@@ -10,16 +10,19 @@ The model will receive multiple features from datasets,
 which include information about the entertainment items, 
 and then use machine learning algorithms to uncover potential interests. 
 Also, there will be a feedback mechanism which will allow users to dislike items, 
-helping users get better experiences.\
+helping users get better experiences.
 
 ## Data Source
 https://www.kaggle.com/datasets/shivamb/netflix-shows/data
 https://www.kaggle.com/datasets/antonkozyriev/game-recommendations-on-steam/data
+https://www.kaggle.com/datasets/anilcogalan/steam-recommender-system
 https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset
 
 ## Use
-run web_app.py to run the interactive recommendation systems. \
-run cb_movies.py to do the content-based filtering on movies dataset. \
-run ub_games.py to do the user-based filtering on games dataset. \
-run cb_books.py to do the content-based filtering on books dataset. \
-run cross_recommend.py to do the cross-domain recommendations. \
+1. download all the datasets from the websites in the datasource. Unzip them and put all the files in the directory.
+2. run prepare data if you want to try cross-domain recommendations.
+3. run web_app.py to run the interactive recommendation systems. 
+4. run cb_movies.py to do the content-based filtering on movies dataset.
+5. run ub_games.py to do the user-based filtering on games dataset. 
+6. run cb_books.py to do the content-based filtering on books dataset. 
+7. run cross_recommend.py to do the cross-domain recommendations. 

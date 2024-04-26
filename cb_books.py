@@ -28,11 +28,11 @@ class BookRecommender:
         if os.path.exists(self.sim_matrix_path):
             self.cosine_sim = load(self.sim_matrix_path)
         else:
-            # 文本描述处理
+            # Process text features
             tfidf = TfidfVectorizer(stop_words='english', min_df=5, max_df=0.9, max_features=10000)
             tfidf_matrix = tfidf.fit_transform(self.data['description'].fillna(''))
 
-            # 多值类别特征处理
+            # Process multi-valued categorical features
             self.data['authors'] = self.data['authors'].fillna('').map(lambda x: x.split(';'))
             fh1 = FeatureHasher(n_features=100, input_type='string')
             authors_matrix = fh1.fit_transform(self.data['authors'])
@@ -40,7 +40,7 @@ class BookRecommender:
             self.data['categories'] = self.data['categories'].fillna('').map(lambda x: x.split(','))
             categories_matrix = fh1.fit_transform(self.data['categories'])
 
-            # 数值型特征处理
+            # Process numeric features
             scaler = StandardScaler()
             average_published_year = self.data['published_year'].mean()
             published_year_scaled = scaler.fit_transform(self.data[['published_year']].fillna(average_published_year))
@@ -53,24 +53,24 @@ class BookRecommender:
             average_num_pages = self.data['num_pages'].mean()
             num_pages_scaled = scaler.fit_transform(self.data[['num_pages']].fillna(average_num_pages))
 
-            # 合并所有特征矩阵
+            # Combine all feature matrices
             self.features = hstack([tfidf_matrix, authors_matrix, categories_matrix, published_year_scaled,
                                     rating_scaled, num_pages_scaled])
             self.cosine_sim = cosine_similarity(self.features)
             dump(self.cosine_sim, self.sim_matrix_path)
 
-    def recommend(self, liked_book, disliked_books=[], n=5):
+    def recommend(self, liked, disliked=[], n=5):
         recommendations = []
-        for book in liked_book:
+        for book in liked:
             if book not in self.data['title'].values:
                 return []
-            # 对不喜欢的电影调整相似度
-            for title in disliked_books:
+            # Adjust the similarity for disliked books
+            for title in disliked:
                 idx = self.data.index[self.data['title'] == title].tolist()
                 for i in idx:
                     self.cosine_sim[i, :] = self.cosine_sim[:, i] = 0
 
-            # 推荐逻辑
+            # recommend
             idx = self.data[self.data['title'] == book].index[0]
             sim_scores = list(enumerate(self.cosine_sim[idx]))
             sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)

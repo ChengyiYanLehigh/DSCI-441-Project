@@ -28,11 +28,11 @@ class MovieRecommender:
         if os.path.exists(self.sim_matrix_path):
             self.cosine_sim = load(self.sim_matrix_path)
         else:
-            # 文本描述处理
+            # Process text features
             tfidf = TfidfVectorizer(stop_words='english', min_df=5, max_df=0.9, max_features=10000)
             tfidf_matrix = tfidf.fit_transform(self.data['description'])
 
-            # 多值类别特征处理
+            # Process multi-valued categorical features
             self.data['director'] = self.data['director'].fillna('').map(lambda x: x.split(', '))
             fh1 = FeatureHasher(n_features=100, input_type='string')
             director_matrix = fh1.fit_transform(self.data['director'])
@@ -48,27 +48,27 @@ class MovieRecommender:
             fh3 = FeatureHasher(n_features=10, input_type='string')
             listed_in_matrix = fh3.fit_transform(self.data['listed_in'])
 
-            # 单值类别特征处理
+            # Process single-valued categorical features
             ohe = OneHotEncoder()
             rating_matrix = ohe.fit_transform(self.data[['rating']].fillna('Unknown'))
 
-            # 合并所有特征矩阵
+            # Combine all feature matrices
             self.features = hstack([tfidf_matrix, director_matrix, cast_matrix, listed_in_matrix, country_matrix, rating_matrix])
             self.cosine_sim = cosine_similarity(self.features)
             dump(self.cosine_sim, self.sim_matrix_path)
 
-    def recommend(self, liked_movie, disliked_movies=[], n=5):
+    def recommend(self, liked, disliked=[], n=5):
         recommendations = []
-        for movie in liked_movie:
+        for movie in liked:
             if movie not in self.data['title'].values:
                 return []
-            # 对不喜欢的电影调整相似度
-            for title in disliked_movies:
+            # Adjust the similarity for disliked books
+            for title in disliked:
                 idx = self.data.index[self.data['title'] == title].tolist()
                 for i in idx:
                     self.cosine_sim[i, :] = self.cosine_sim[:, i] = 0
 
-            # 推荐逻辑
+            # recommend
             idx = self.data[self.data['title'] == movie].index[0]
             sim_scores = list(enumerate(self.cosine_sim[idx]))
             sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)

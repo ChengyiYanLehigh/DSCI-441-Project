@@ -1,0 +1,13 @@
+
+steam_recommender.csv
+recommendations.csv
+netflix_titles.csv
+model/games_knn_model.joblib
+games_metadata.json
+games.csv
+cosine_sim.joblib
+book_data.csv
+book_cosine_sim.joblib
+users.csv
+*.csv
+*.joblib
